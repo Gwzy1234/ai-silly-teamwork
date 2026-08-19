@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: silly_teamwork
+      POSTGRES_USER: silly_teamwork
+      POSTGRES_PASSWORD: silly_teamwork
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U silly_teamwork -d silly_teamwork"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: silly-teamwork-api:development
+    build:
+      context: .
+      target: development
+    environment:
+      ENVIRONMENT: development
+      DEBUG: "true"
+      SECRET_KEY: local-development-only-change-me
+      DATABASE_URL: postgresql+asyncpg://silly_teamwork:silly_teamwork@db:5432/silly_teamwork
+      DEADLINE_REMINDERS_ENABLED: "false"
+      DEADLINE_REMINDER_INTERVAL_SECONDS: "86400"
+      DEADLINE_DUE_SOON_HOURS: "72"
+      AI_LLM_ENABLED: "${AI_LLM_ENABLED:-false}"
+      AI_LLM_API_KEY: "${AI_LLM_API_KEY:-}"
+      AI_LLM_BASE_URL: "${AI_LLM_BASE_URL:-}"
+      AI_LLM_MODEL: "${AI_LLM_MODEL:-}"
+      AI_LLM_TIMEOUT_SECONDS: "${AI_LLM_TIMEOUT_SECONDS:-30}"
+      AI_LLM_MAX_TOKENS: "${AI_LLM_MAX_TOKENS:-2000}"
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >-
+      sh -c "alembic upgrade head &&
+      uvicorn silly_teamwork.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  scheduler:
+    image: silly-teamwork-api:development
+    environment:
+      ENVIRONMENT: development
+      SECRET_KEY: local-development-only-change-me
+      DATABASE_URL: postgresql+asyncpg://silly_teamwork:silly_teamwork@db:5432/silly_teamwork
+      DEADLINE_REMINDERS_ENABLED: "false"
+      NOTIFICATION_SCHEDULER_INTERVAL_SECONDS: "60"
+      NOTIFICATION_SCHEDULER_BATCH_SIZE: "100"
+      NOTIFICATION_SCHEDULER_LEASE_SECONDS: "300"
+      NOTIFICATION_SCHEDULER_MAX_ATTEMPTS: "5"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >-
+      sh -c "alembic upgrade head &&
+      python -m silly_teamwork.scheduler"
+
+volumes:
+  postgres_data:
+  uploads_data:

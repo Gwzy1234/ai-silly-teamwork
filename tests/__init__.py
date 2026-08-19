@@ -1,0 +1,1 @@
+"""Silly Teamwork test suite."""

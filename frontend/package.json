@@ -1,0 +1,35 @@
+{
+  "name": "silly-teamwork-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "oxlint",
+    "api:generate": "openapi-typescript http://localhost:8000/openapi.json -o src/api/generated/schema.d.ts",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.3.2",
+    "@tanstack/react-query": "^5.101.4",
+    "antd": "^6.6.0",
+    "dayjs": "^1.11.21",
+    "openapi-fetch": "^0.17.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "openapi-typescript": "^7.13.0",
+    "oxlint": "^1.75.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.2.0"
+  }
+}
