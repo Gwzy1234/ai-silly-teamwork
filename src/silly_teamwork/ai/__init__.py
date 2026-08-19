@@ -11,6 +11,7 @@ from silly_teamwork.ai.llm import (
 )
 from silly_teamwork.ai.schemas import (
     AIFileUpdate,
+    AIHistoryResponse,
     AIMemberWorkload,
     AIProjectSnapshot,
     AIProjectSummary,
@@ -29,6 +30,7 @@ from silly_teamwork.ai.tools import AIToolLayer, get_ai_tool_layer
 __all__ = [
     "AIConfigurationError",
     "AIFileUpdate",
+    "AIHistoryResponse",
     "AIMemberWorkload",
     "AIProjectSnapshot",
     "AIProjectSummary",

@@ -282,6 +282,15 @@ class AIToolLayer:
             return value.replace(tzinfo=UTC)
         return value.astimezone(UTC)
 
+    async def require_project_access(
+        self,
+        session: AsyncSession,
+        current_user: User,
+        project_id: UUID,
+    ) -> Project:
+        """Authorize project access for AI history and other non-data tools."""
+        return await self._require_project(session, current_user, project_id)
+
     async def _require_project(
         self,
         session: AsyncSession,

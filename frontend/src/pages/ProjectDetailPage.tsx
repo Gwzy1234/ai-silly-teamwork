@@ -35,6 +35,9 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ApiError, getApiErrorMessage } from '../api/errors'
 import { AIProjectDiagnosisCard } from '../features/ai/components/AIProjectDiagnosisCard'
+import { AITaskPlanningCard } from '../features/ai/components/AITaskPlanningCard'
+import { AIWeeklyReportCard } from '../features/ai/components/AIWeeklyReportCard'
+import { useAIHistory } from '../features/ai/hooks'
 import { ProjectFileIndexPanel } from '../features/files/components/ProjectFileIndexPanel'
 import { PersonalTaskCreateModal } from '../features/personal-tasks/components/PersonalTaskCreateModal'
 import { ProjectPersonalTaskPanel } from '../features/personal-tasks/components/ProjectPersonalTaskPanel'
@@ -74,6 +77,7 @@ export function ProjectDetailPage() {
   const projectMembers = useProjectMembers(projectId)
   const teamMembers = useTeamMembers(project.data?.team_id || '')
   const tasks = useTasks(projectId)
+  const aiHistory = useAIHistory(projectId)
   const personalTaskPermission = useCanPublishPersonalTask(project.data?.team_id || '')
   const updateMutation = useUpdateProject(projectId)
   const statusMutation = useUpdateProjectStatus(projectId)
@@ -171,7 +175,21 @@ export function ProjectDetailPage() {
         </Descriptions>
       </Card>
 
-      <AIProjectDiagnosisCard projectId={projectId} />
+      <AIProjectDiagnosisCard
+        projectId={projectId}
+        initialData={aiHistory.data?.risk_analysis ?? null}
+      />
+
+      <AITaskPlanningCard
+        projectId={projectId}
+        teamMembers={teamMembers.data ?? []}
+        initialSuggestions={aiHistory.data?.task_suggestions?.suggestions ?? null}
+      />
+
+      <AIWeeklyReportCard
+        projectId={projectId}
+        initialData={aiHistory.data?.weekly_report ?? null}
+      />
 
       <Card className="content-card">
         <Tabs

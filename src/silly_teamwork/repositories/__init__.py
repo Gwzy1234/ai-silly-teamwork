@@ -1,6 +1,7 @@
 """Persistence operations and SQLAlchemy queries, grouped by aggregate."""
 
 from silly_teamwork.repositories import (
+    ai_generations,
     files,
     invitation_codes,
     notification_schedules,
@@ -17,6 +18,7 @@ from silly_teamwork.repositories import (
 )
 
 __all__ = [
+    "ai_generations",
     "files",
     "invitation_codes",
     "notification_schedules",

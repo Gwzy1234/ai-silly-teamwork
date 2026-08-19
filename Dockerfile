@@ -16,7 +16,9 @@ COPY migrations ./migrations
 
 FROM base AS development
 
-RUN pip install --upgrade pip && pip install ".[dev]"
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip install --upgrade pip \
+    && pip install ".[dev]"
 
 COPY tests ./tests
 

@@ -128,3 +128,9 @@ class WeeklyReportResponse(BaseModel):
     highlights: list[str]
     risks: list[str]
     suggestions: list[str]
+
+
+class AIHistoryResponse(BaseModel):
+    risk_analysis: RiskAnalysisResponse | None = None
+    task_suggestions: TaskSuggestionResponse | None = None
+    weekly_report: WeeklyReportResponse | None = None

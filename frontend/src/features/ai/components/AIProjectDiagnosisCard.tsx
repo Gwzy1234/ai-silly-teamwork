@@ -7,6 +7,7 @@ import type { RiskAnalysisResponse } from '../types'
 
 interface AIProjectDiagnosisCardProps {
   projectId: string
+  initialData?: RiskAnalysisResponse | null
 }
 
 function getAiRiskErrorMessage(error: unknown): string {
@@ -60,8 +61,12 @@ function RiskResult({ data }: { data: RiskAnalysisResponse }) {
   )
 }
 
-export function AIProjectDiagnosisCard({ projectId }: AIProjectDiagnosisCardProps) {
+export function AIProjectDiagnosisCard({
+  projectId,
+  initialData = null,
+}: AIProjectDiagnosisCardProps) {
   const mutation = useAnalyzeProjectRisk(projectId)
+  const result = mutation.data ?? initialData
 
   return (
     <Card
@@ -92,8 +97,8 @@ export function AIProjectDiagnosisCard({ projectId }: AIProjectDiagnosisCardProp
             </Button>
           }
         />
-      ) : mutation.data ? (
-        <RiskResult data={mutation.data} />
+      ) : result ? (
+        <RiskResult data={result} />
       ) : (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}

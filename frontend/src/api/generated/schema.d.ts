@@ -437,6 +437,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/{project_id}/ai/task-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate AI task suggestions */
+        post: operations["suggest_tasks_api_v1_projects__project_id__ai_task_suggestions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{project_id}/ai/weekly-report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate AI weekly report */
+        post: operations["generate_weekly_report_api_v1_projects__project_id__ai_weekly_report_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{project_id}/ai/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the current user's latest AI generation results for a project */
+        get: operations["get_ai_history_api_v1_projects__project_id__ai_history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{project_id}/file-index": {
         parameters: {
             query?: never;
@@ -1554,6 +1605,135 @@ export interface components {
              * Format: date-time
              */
             generated_at: string;
+        };
+        /** TaskSuggestion */
+        TaskSuggestion: {
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            priority: components["schemas"]["TaskPriority"];
+            /** Starts At */
+            starts_at: string | null;
+            /** Due At */
+            due_at: string | null;
+            /** Recommended Owner User Id */
+            recommended_owner_user_id: string | null;
+            /** Reason */
+            reason: string;
+        };
+        /** TaskSuggestionRequest */
+        TaskSuggestionRequest: {
+            /** Instruction */
+            instruction: string;
+            /**
+             * Count
+             * @default 5
+             */
+            count?: number;
+        };
+        /** TaskSuggestionResponse */
+        TaskSuggestionResponse: {
+            /** Project Id */
+            project_id: string;
+            /** Suggestions */
+            suggestions: components["schemas"]["TaskSuggestion"][];
+        };
+        /** AITaskInfo */
+        AITaskInfo: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Status */
+            status: string;
+            /** Priority */
+            priority: string;
+            /** Task Type */
+            task_type: string;
+            /** Starts At */
+            starts_at: string | null;
+            /** Due At */
+            due_at: string | null;
+            /** Completed At */
+            completed_at: string | null;
+            /** Owner User Id */
+            owner_user_id: string | null;
+            /** Owner Display Name */
+            owner_display_name: string | null;
+            /** Assignee User Ids */
+            assignee_user_ids: string[];
+        };
+        /** AIFileUpdate */
+        AIFileUpdate: {
+            /**
+             * File Id
+             * Format: uuid
+             */
+            file_id: string;
+            /** Name */
+            name: string;
+            /** Uploaded By Id */
+            uploaded_by_id: string | null;
+            /** Uploaded By Name */
+            uploaded_by_name: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Project Id */
+            project_id: string | null;
+            /** Task Id */
+            task_id: string | null;
+            /** Task Title */
+            task_title: string | null;
+        };
+        /** AIHistoryResponse */
+        AIHistoryResponse: {
+            risk_analysis: components["schemas"]["RiskAnalysisResponse"] | null;
+            task_suggestions: components["schemas"]["TaskSuggestionResponse"] | null;
+            weekly_report: components["schemas"]["WeeklyReportResponse"] | null;
+        };
+        /** WeeklyReportRequest */
+        WeeklyReportRequest: {
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+        };
+        /** WeeklyReportResponse */
+        WeeklyReportResponse: {
+            /**
+             * Project Id
+             * Format: uuid
+             */
+            project_id: string;
+            /** Period Start */
+            period_start: string;
+            /** Period End */
+            period_end: string;
+            /** Completed Tasks */
+            completed_tasks: components["schemas"]["AITaskInfo"][];
+            /** Unfinished Tasks */
+            unfinished_tasks: components["schemas"]["AITaskInfo"][];
+            /** Overdue Tasks */
+            overdue_tasks: components["schemas"]["AITaskInfo"][];
+            /** File Updates */
+            file_updates: components["schemas"]["AIFileUpdate"][];
+            /** Summary */
+            summary: string;
+            /** Highlights */
+            highlights: string[];
+            /** Risks */
+            risks: string[];
+            /** Suggestions */
+            suggestions: string[];
         };
         /** TaskAssignmentResponse */
         TaskAssignmentResponse: {
@@ -2812,6 +2992,163 @@ export interface operations {
             };
             /** @description AI service error */
             502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suggest_tasks_api_v1_projects__project_id__ai_task_suggestions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskSuggestionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskSuggestionResponse"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Project access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AI service error */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    generate_weekly_report_api_v1_projects__project_id__ai_weekly_report_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WeeklyReportRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyReportResponse"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Project access required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AI service error */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_ai_history_api_v1_projects__project_id__ai_history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AIHistoryResponse"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Project access required */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

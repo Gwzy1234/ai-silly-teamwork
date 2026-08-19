@@ -1,6 +1,8 @@
 """Public SQLAlchemy model registry used by the application and Alembic."""
 
+from silly_teamwork.models.ai_generation import AIGeneration
 from silly_teamwork.models.enums import (
+    AIGenerationType,
     AttachmentMode,
     InvitationStatus,
     NotificationScheduleStatus,
@@ -29,6 +31,8 @@ from silly_teamwork.models.team_member import TeamMember
 from silly_teamwork.models.user import User
 
 __all__ = [
+    "AIGeneration",
+    "AIGenerationType",
     "AttachmentMode",
     "File",
     "InvitationCode",

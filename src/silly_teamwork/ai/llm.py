@@ -53,11 +53,13 @@ class MiMoProvider:
         client: httpx.AsyncClient | None = None,
     ) -> None:
         settings = get_settings()
-        self._api_key = SecretStr(
-            api_key.get_secret_value()
-            if isinstance(api_key, SecretStr)
-            else (api_key or settings.ai_llm_api_key.get_secret_value())
-        )
+        if api_key is None:
+            resolved_api_key = settings.ai_llm_api_key.get_secret_value()
+        elif isinstance(api_key, SecretStr):
+            resolved_api_key = api_key.get_secret_value()
+        else:
+            resolved_api_key = api_key
+        self._api_key = SecretStr(resolved_api_key)
         self._base_url = (base_url or settings.ai_llm_base_url or DEFAULT_MIMO_BASE_URL).rstrip(
             "/"
         )

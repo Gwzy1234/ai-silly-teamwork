@@ -77,3 +77,9 @@ class NotificationScheduleStatus(StrEnum):
     SENT = "sent"
     CANCELLED = "cancelled"
     FAILED = "failed"
+
+
+class AIGenerationType(StrEnum):
+    RISK_ANALYSIS = "risk_analysis"
+    TASK_SUGGESTIONS = "task_suggestions"
+    WEEKLY_REPORT = "weekly_report"
